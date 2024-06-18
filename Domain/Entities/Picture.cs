@@ -15,6 +15,4 @@ public class Picture
 
     [Required]
     public byte[] Image { get; set; }
-
-    public Employee Employee { get; set; }
 }

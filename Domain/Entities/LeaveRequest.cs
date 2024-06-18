@@ -10,7 +10,7 @@ public class LeaveRequest
     public int Id { get; set; }
 
     [Required]
-    public Employee Employee { get; set; }
+    public int EmployeeId { get; set; }
 
     [Required]
     public string AbsenceReason { get; set; }

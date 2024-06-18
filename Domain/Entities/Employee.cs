@@ -24,12 +24,8 @@ public class Employee
     public bool ActiveEmployee { get; set; }
 
     [Required]
-    [ForeignKey(nameof(Employee))]
-    public Employee PeoplePartner { get; set; }
+    public int PeoplePartner { get; set; }
 
     [Required]
     public int AbsenceBalance { get; set; }
-
-    public Picture Picture { get; set; }
-
 }

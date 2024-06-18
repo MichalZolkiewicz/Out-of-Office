@@ -10,10 +10,10 @@ public class ApprovalRequest
     public int Id { get; set; }
 
     [Required]
-    public Employee Approver { get; set; }
+    public int Approver { get; set; }
 
     [Required]
-    public LeaveRequest LeaveRequest { get; set; }
+    public int LeaveRequest { get; set; }
 
     [Required]
     public string Status { get; set; }
