@@ -5,9 +5,9 @@ namespace Application.Interfaces;
 
 public interface IProjectService
 {
-    Task<IEnumerable<ProjectDto>> GetAllApprovalRequestsAsync();
-    Task<ProjectDto> GetApprovalRequestsByIdAsync(int id);
-    Task<ProjectDto> AddApprovalRequestAsync(CreateProjectDto project);
-    Task UpdateApprovalRequestAsync(UpdateProjectDto project);
-    Task DeleteApprovalRequestAsync(int id);
+    Task<IEnumerable<ProjectDto>> GetAllProjectsAsync();
+    Task<ProjectDto> GetProjectByIdAsync(int id);
+    Task<ProjectDto> AddProjectAsync(CreateProjectDto project);
+    Task UpdateProjectAsync(UpdateProjectDto project);
+    Task DeleteProjectAsync(int id);
 }

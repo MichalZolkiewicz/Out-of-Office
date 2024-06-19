@@ -4,9 +4,9 @@ namespace Application.Interfaces;
 
 public interface ILeaveRequestService
 {
-    Task<IEnumerable<LeaveRequestDto>> GetAllApprovalRequestsAsync();
-    Task<LeaveRequestDto> GetApprovalRequestsByIdAsync(int id);
-    Task<LeaveRequestDto> AddApprovalRequestAsync(CreateLeaveRequestDto leaveRequest);
-    Task UpdateApprovalRequestAsync(UpdateLeaveRequestDto leaveRequest);
-    Task DeleteApprovalRequestAsync(int id);
+    Task<IEnumerable<LeaveRequestDto>> GetAllLeaveRequestsAsync();
+    Task<LeaveRequestDto> GetLeaveRequestByIdAsync(int id);
+    Task<LeaveRequestDto> AddLeaveRequestAsync(CreateLeaveRequestDto leaveRequest);
+    Task UpdateLeaveRequestAsync(UpdateLeaveRequestDto leaveRequest);
+    Task DeleteLeaveRequestAsync(int id);
 }

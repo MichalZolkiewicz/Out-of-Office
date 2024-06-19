@@ -5,27 +5,27 @@ namespace Application.Services;
 
 internal class ProjectService : IProjectService
 {
-    public Task<ProjectDto> AddApprovalRequestAsync(CreateProjectDto project)
+    public Task<ProjectDto> AddProjectAsync(CreateProjectDto project)
     {
         throw new NotImplementedException();
     }
 
-    public Task DeleteApprovalRequestAsync(int id)
+    public Task DeleteProjectAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<ProjectDto>> GetAllApprovalRequestsAsync()
+    public Task<IEnumerable<ProjectDto>> GetAllProjectsAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<ProjectDto> GetApprovalRequestsByIdAsync(int id)
+    public Task<ProjectDto> GetProjectByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateApprovalRequestAsync(UpdateProjectDto project)
+    public Task UpdateProjectAsync(UpdateProjectDto project)
     {
         throw new NotImplementedException();
     }

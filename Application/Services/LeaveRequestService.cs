@@ -5,27 +5,27 @@ namespace Application.Services;
 
 public class LeaveRequestService : ILeaveRequestService
 {
-    public Task<LeaveRequestDto> AddApprovalRequestAsync(CreateLeaveRequestDto leaveRequest)
+    public Task<LeaveRequestDto> AddLeaveRequestAsync(CreateLeaveRequestDto leaveRequest)
     {
         throw new NotImplementedException();
     }
 
-    public Task DeleteApprovalRequestAsync(int id)
+    public Task DeleteLeaveRequestAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<LeaveRequestDto>> GetAllApprovalRequestsAsync()
+    public Task<IEnumerable<LeaveRequestDto>> GetAllLeaveRequestsAsync()
     {
         throw new NotImplementedException();
     }
 
-    public Task<LeaveRequestDto> GetApprovalRequestsByIdAsync(int id)
+    public Task<LeaveRequestDto> GetLeaveRequestByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Task UpdateApprovalRequestAsync(UpdateLeaveRequestDto leaveRequest)
+    public Task UpdateLeaveRequestAsync(UpdateLeaveRequestDto leaveRequest)
     {
         throw new NotImplementedException();
     }

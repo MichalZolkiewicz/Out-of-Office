@@ -20,7 +20,7 @@ public class ApprovalRequestService : IApprovalRequestService
         throw new NotImplementedException();
     }
 
-    public Task<ApprovalRequestDto> GetApprovalRequestsByIdAsync(int id)
+    public Task<ApprovalRequestDto> GetApprovalRequestByIdAsync(int id)
     {
         throw new NotImplementedException();
     }
