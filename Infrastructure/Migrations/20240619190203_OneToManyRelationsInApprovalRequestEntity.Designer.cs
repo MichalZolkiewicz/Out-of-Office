@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(OutOfOfficeContext))]
-    partial class OutOfOfficeContextModelSnapshot : ModelSnapshot
+    [Migration("20240619190203_OneToManyRelationsInApprovalRequestEntity")]
+    partial class OneToManyRelationsInApprovalRequestEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,7 +76,7 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("PeoplePartnerId")
+                    b.Property<int>("PeoplePartner")
                         .HasColumnType("int");
 
                     b.Property<string>("Position")
@@ -86,8 +89,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PeoplePartnerId");
 
                     b.ToTable("Employees");
                 });
@@ -183,17 +184,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("LeaveRequest");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Employee", b =>
-                {
-                    b.HasOne("Domain.Entities.Employee", "PeoplePartner")
-                        .WithMany("Employees")
-                        .HasForeignKey("PeoplePartnerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("PeoplePartner");
-                });
-
             modelBuilder.Entity("Domain.Entities.Project", b =>
                 {
                     b.HasOne("Domain.Entities.Employee", "ProjectManager")
@@ -208,8 +198,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Employee", b =>
                 {
                     b.Navigation("ApprovalRequests");
-
-                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }
