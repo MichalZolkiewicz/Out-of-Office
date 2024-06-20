@@ -1,4 +1,4 @@
-﻿using Application.Dto.LeaveRequest;
+﻿using Application.Dto.LeaveRequests;
 
 namespace Application.Interfaces;
 

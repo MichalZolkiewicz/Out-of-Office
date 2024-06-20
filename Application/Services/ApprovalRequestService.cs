@@ -1,4 +1,4 @@
-﻿using Application.Dto.ApprovalRequest;
+﻿using Application.Dto.ApprovalRequests;
 using Application.Interfaces;
 
 namespace Application.Services;

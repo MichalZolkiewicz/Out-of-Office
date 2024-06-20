@@ -1,4 +1,4 @@
-﻿using Application.Dto.Project;
+﻿using Application.Dto.Projects;
 using Application.Interfaces;
 
 namespace Application.Services;

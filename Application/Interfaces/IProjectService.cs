@@ -1,5 +1,4 @@
-﻿using Application.Dto.LeaveRequest;
-using Application.Dto.Project;
+﻿using Application.Dto.Projects;
 
 namespace Application.Interfaces;
 

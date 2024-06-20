@@ -1,4 +1,4 @@
-﻿using Application.Dto.Employee;
+﻿using Application.Dto.Employees;
 
 namespace Application.Interfaces;
 

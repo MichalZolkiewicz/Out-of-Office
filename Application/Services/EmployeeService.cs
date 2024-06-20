@@ -1,18 +1,17 @@
-﻿using Application.Dto.Employee;
+﻿using Application.Dto.Employees;
 using Application.Interfaces;
+using Domain.Interfaces;
 
 namespace Application.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    public Task<EmployeeDto> AddEmployeeAsync(CreateEmployeeDto employee)
-    {
-        throw new NotImplementedException();
-    }
 
-    public Task DeleteEmployeeAsync(int id)
+    private readonly IEmployeeRepository _employeeRepository;
+
+    public EmployeeService(IEmployeeRepository employeeRepository)
     {
-        throw new NotImplementedException();
+        _employeeRepository = employeeRepository;
     }
 
     public Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync()
@@ -25,7 +24,17 @@ public class EmployeeService : IEmployeeService
         throw new NotImplementedException();
     }
 
+    public Task<EmployeeDto> AddEmployeeAsync(CreateEmployeeDto employee)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task UpdateEmployeeAsync(UpdateEmployeeDto employee)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteEmployeeAsync(int id)
     {
         throw new NotImplementedException();
     }
