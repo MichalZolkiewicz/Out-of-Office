@@ -10,15 +10,17 @@ public class ApprovalRequest
     public int Id { get; set; }
 
     [Required]
-    public int Approver { get; set; }
+    public int ApproverId { get; set; }
+    public Employee Approver { get; set; }
 
     [Required]
-    public int LeaveRequest { get; set; }
+    public int LeaveRequestId { get; set; }
+
+    public LeaveRequest LeaveRequest { get; set; }
 
     [Required]
     public string Status { get; set; }
 
-    [Required]
     [MaxLength(1000)]
     public string Comment { get; set; }
 }
