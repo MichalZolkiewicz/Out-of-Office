@@ -1,32 +1,51 @@
 ﻿using Application.Dto.ApprovalRequests;
 using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities;
+using Domain.Interfaces;
 
 namespace Application.Services;
 
 public class ApprovalRequestService : IApprovalRequestService
 {
-    public Task<ApprovalRequestDto> AddApprovalRequestAsync(CreateApprovalRequestDto approvalRequest)
+
+    private readonly IApprovalRepository _approvalRepository;
+    private readonly IMapper _mapper;
+
+    public ApprovalRequestService(IApprovalRepository approvalRepository, IMapper mapper)
     {
-        throw new NotImplementedException();
+        _approvalRepository = approvalRepository;
+        _mapper = mapper;
     }
 
-    public Task DeleteApprovalRequestAsync(int id)
+    public async Task<IEnumerable<ApprovalRequestDto>> GetAllApprovalRequestsAsync()
     {
-        throw new NotImplementedException();
+        var approvals = await _approvalRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<ApprovalRequestDto>>(approvals);
     }
 
-    public Task<IEnumerable<ApprovalRequestDto>> GetAllApprovalRequestsAsync()
+    public async Task<ApprovalRequestDto> GetApprovalRequestByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var approval = await _approvalRepository.GetByIdAsync(id);
+        return _mapper.Map<ApprovalRequestDto>(approval);
+    }
+    public async Task<ApprovalRequestDto> AddApprovalRequestAsync(CreateApprovalRequestDto newApprovalRequest)
+    {
+        var approval = _mapper.Map<ApprovalRequest>(newApprovalRequest);
+        var result = await _approvalRepository.AddAsync(approval);
+        return _mapper.Map<ApprovalRequestDto>(result);
     }
 
-    public Task<ApprovalRequestDto> GetApprovalRequestByIdAsync(int id)
+    public async Task UpdateApprovalRequestAsync(UpdateApprovalRequestDto updatedApprovalRequest)
     {
-        throw new NotImplementedException();
+        var existingApproval = await _approvalRepository.GetByIdAsync(updatedApprovalRequest.Id);
+        var approval = _mapper.Map(updatedApprovalRequest, existingApproval);
+        await _approvalRepository.UpdateAsync(approval);
     }
 
-    public Task UpdateApprovalRequestAsync(UpdateApprovalRequestDto approvalRequest)
+    public async Task DeleteApprovalRequestAsync(int id)
     {
-        throw new NotImplementedException();
+        var approval = await _approvalRepository.GetByIdAsync(id);
+        await _approvalRepository.DeleteAsync(approval);
     }
 }

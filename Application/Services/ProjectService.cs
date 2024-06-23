@@ -1,32 +1,52 @@
 ﻿using Application.Dto.Projects;
 using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities;
+using Domain.Interfaces;
 
 namespace Application.Services;
 
 internal class ProjectService : IProjectService
 {
-    public Task<ProjectDto> AddProjectAsync(CreateProjectDto project)
+
+    private readonly IProjectRepository _projectRepository;
+    private readonly IMapper _mapper;
+
+    public ProjectService(IProjectRepository projectRepository, IMapper mapper)
     {
-        throw new NotImplementedException();
+        _projectRepository = projectRepository;
+        _mapper = mapper;
     }
 
-    public Task DeleteProjectAsync(int id)
+    public async Task<IEnumerable<ProjectDto>> GetAllProjectsAsync()
     {
-        throw new NotImplementedException();
+        var projects = await _projectRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<ProjectDto>>(projects);
     }
 
-    public Task<IEnumerable<ProjectDto>> GetAllProjectsAsync()
+    public async Task<ProjectDto> GetProjectByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var project = await _projectRepository.GetByIdAsync(id);
+        return _mapper.Map<ProjectDto>(project);
     }
 
-    public Task<ProjectDto> GetProjectByIdAsync(int id)
+    public async Task<ProjectDto> AddProjectAsync(CreateProjectDto newProject)
     {
-        throw new NotImplementedException();
+        var project = _mapper.Map<Project>(newProject);
+        var result = await _projectRepository.AddAsync(project);
+        return _mapper.Map<ProjectDto>(result);
     }
 
-    public Task UpdateProjectAsync(UpdateProjectDto project)
+    public async Task UpdateProjectAsync(UpdateProjectDto updatedProject)
     {
-        throw new NotImplementedException();
+        var existingProject = await _projectRepository.GetByIdAsync(updatedProject.Id);
+        var project = _mapper.Map(updatedProject, existingProject);
+        await _projectRepository.UpdateAsync(project);
+    }
+
+    public async Task DeleteProjectAsync(int id)
+    {
+        var post = await _projectRepository.GetByIdAsync(id);
+        await _projectRepository.DeleteAsync(post);
     }
 }

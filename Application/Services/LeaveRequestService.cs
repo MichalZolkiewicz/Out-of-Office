@@ -1,32 +1,52 @@
 ﻿using Application.Dto.LeaveRequests;
 using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities;
+using Domain.Interfaces;
 
 namespace Application.Services;
 
 public class LeaveRequestService : ILeaveRequestService
 {
-    public Task<LeaveRequestDto> AddLeaveRequestAsync(CreateLeaveRequestDto leaveRequest)
+
+    private readonly ILeaveRequestRepository _leaveRequestRepository;
+    private readonly IMapper _mapper;
+
+    public LeaveRequestService(ILeaveRequestRepository leaveRequestRepository, IMapper mapper)
     {
-        throw new NotImplementedException();
+        _leaveRequestRepository = leaveRequestRepository;
+        _mapper = mapper;
     }
 
-    public Task DeleteLeaveRequestAsync(int id)
+    public async Task<IEnumerable<LeaveRequestDto>> GetAllLeaveRequestsAsync()
     {
-        throw new NotImplementedException();
+        var leaves = await _leaveRequestRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<LeaveRequestDto>>(leaves); 
     }
 
-    public Task<IEnumerable<LeaveRequestDto>> GetAllLeaveRequestsAsync()
+    public async Task<LeaveRequestDto> GetLeaveRequestByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var leave = await _leaveRequestRepository.GetByIdAsync(id);
+        return _mapper.Map<LeaveRequestDto>(leave);
     }
 
-    public Task<LeaveRequestDto> GetLeaveRequestByIdAsync(int id)
+    public async Task<LeaveRequestDto> AddLeaveRequestAsync(CreateLeaveRequestDto newLeaveRequest)
     {
-        throw new NotImplementedException();
+        var leave = _mapper.Map<LeaveRequest>(newLeaveRequest);
+        var result = await _leaveRequestRepository.AddAsync(leave);
+        return _mapper.Map<LeaveRequestDto>(result);
     }
 
-    public Task UpdateLeaveRequestAsync(UpdateLeaveRequestDto leaveRequest)
+    public async Task UpdateLeaveRequestAsync(UpdateLeaveRequestDto updatedLeaveRequest)
     {
-        throw new NotImplementedException();
+        var existingLeave = await _leaveRequestRepository.GetByIdAsync(updatedLeaveRequest.Id);
+        var leave = _mapper.Map(updatedLeaveRequest, existingLeave);
+        await _leaveRequestRepository.UpdateAsync(leave);
+    }
+
+    public async Task DeleteLeaveRequestAsync(int id)
+    {
+        var leave = await _leaveRequestRepository.GetByIdAsync(id);
+        await _leaveRequestRepository.DeleteAsync(leave);
     }
 }

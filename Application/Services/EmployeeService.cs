@@ -1,5 +1,7 @@
 ﻿using Application.Dto.Employees;
 using Application.Interfaces;
+using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces;
 
 namespace Application.Services;
@@ -8,34 +10,43 @@ public class EmployeeService : IEmployeeService
 {
 
     private readonly IEmployeeRepository _employeeRepository;
+    private readonly IMapper _mapper;
 
-    public EmployeeService(IEmployeeRepository employeeRepository)
+    public EmployeeService(IEmployeeRepository employeeRepository, IMapper mapper)
     {
         _employeeRepository = employeeRepository;
+        _mapper = mapper;
     }
 
-    public Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync()
+    public async Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync()
     {
-        throw new NotImplementedException();
+        var employee = await _employeeRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<EmployeeDto>>(employee);
     }
 
-    public Task<EmployeeDto> GetEmployeeByIdAsync(int id)
+    public async Task<EmployeeDto> GetEmployeeByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var employee = await _employeeRepository.GetByIdAsync(id);
+        return _mapper.Map<EmployeeDto>(employee);
     }
 
-    public Task<EmployeeDto> AddEmployeeAsync(CreateEmployeeDto employee)
+    public async Task<EmployeeDto> AddEmployeeAsync(CreateEmployeeDto newEmployee)
     {
-        throw new NotImplementedException();
+        var employee = _mapper.Map<Employee>(newEmployee);
+        var result = await _employeeRepository.AddAsync(employee);
+        return _mapper.Map<EmployeeDto>(result);
     }
 
-    public Task UpdateEmployeeAsync(UpdateEmployeeDto employee)
+    public async Task UpdateEmployeeAsync(UpdateEmployeeDto updateEmployee)
     {
-        throw new NotImplementedException();
+        var existingEmployee = await _employeeRepository.GetByIdAsync(updateEmployee.Id);
+        var employee = _mapper.Map(updateEmployee, existingEmployee);
+        await _employeeRepository.UpdateAsync(employee);
     }
 
-    public Task DeleteEmployeeAsync(int id)
+    public async Task DeleteEmployeeAsync(int id)
     {
-        throw new NotImplementedException();
+        var post = await _employeeRepository.GetByIdAsync(id);
+        await _employeeRepository.DeleteAsync(post);
     }
 }
