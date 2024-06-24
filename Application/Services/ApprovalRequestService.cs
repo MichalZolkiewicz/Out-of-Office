@@ -18,9 +18,9 @@ public class ApprovalRequestService : IApprovalRequestService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<ApprovalRequestDto>> GetAllApprovalRequestsAsync()
+    public async Task<IEnumerable<ApprovalRequestDto>> GetAllApprovalRequestsAsync(string sortField, bool ascending, string filterBy)
     {
-        var approvals = await _approvalRepository.GetAllAsync();
+        var approvals = await _approvalRepository.GetAllAsync(sortField, ascending, filterBy);
         return _mapper.Map<IEnumerable<ApprovalRequestDto>>(approvals);
     }
 
