@@ -22,14 +22,14 @@ namespace Out_of_Office.Controllers
         [HttpGet("[action]")]
         public IActionResult GetSortFields()
         {
-            return Ok(SortingHelper.GetSortFields().Select(x => x.Key));
+            return Ok(SortingHelper.GetEmployeeSortFields().Select(x => x.Key));
         }
 
         [SwaggerOperation(Summary = "Retrieves lists of all employees")]
         [HttpGet]
-        public async Task<IActionResult> GetAllEmployeesAsync([FromQuery] SortingFilter sortingFilter, [FromQuery] string filterBy = "")
+        public async Task<IActionResult> GetAllEmployeesAsync([FromQuery] EmployeeSortingFilter sortingFilter, [FromQuery] string filterBy = "")
         {
-            var validSortingFilter = new SortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
+            var validSortingFilter = new EmployeeSortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
 
             var employees = await _employeeService.GetAllEmployeesAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
             if(employees == null)
