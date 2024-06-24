@@ -18,9 +18,9 @@ public class EmployeeService : IEmployeeService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync()
+    public async Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync(string sortField, bool ascending, string filterBy)
     {
-        var employee = await _employeeRepository.GetAllAsync();
+        var employee = await _employeeRepository.GetAllAsync(sortField, ascending, filterBy);
         return _mapper.Map<IEnumerable<EmployeeDto>>(employee);
     }
 

@@ -1,6 +1,8 @@
 ﻿using Application.Dto.Employees;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Out_of_Office.Filters;
+using Out_of_Office.Filters.Helpers;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Out_of_Office.Controllers
@@ -16,11 +18,20 @@ namespace Out_of_Office.Controllers
             _employeeService = employeeService;
         }
 
+        [SwaggerOperation(Summary = "Retireves sort fields")]
+        [HttpGet("[action]")]
+        public IActionResult GetSortFields()
+        {
+            return Ok(SortingHelper.GetSortFields().Select(x => x.Key));
+        }
+
         [SwaggerOperation(Summary = "Retrieves lists of all employees")]
         [HttpGet]
-        public async Task<IActionResult> GetAllEmployeesAsync()
+        public async Task<IActionResult> GetAllEmployeesAsync([FromQuery] SortingFilter sortingFilter, [FromQuery] string filterBy = "")
         {
-            var employees = await _employeeService.GetAllEmployeesAsync();
+            var validSortingFilter = new SortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
+
+            var employees = await _employeeService.GetAllEmployeesAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
             if(employees == null)
             {
                 return NotFound();

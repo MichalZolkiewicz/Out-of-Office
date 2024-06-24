@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.ExtensionMethods;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -14,9 +15,13 @@ public class EmployeeRepository : IEmployeeRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Employee>> GetAllAsync()
+    public async Task<IEnumerable<Employee>> GetAllAsync(string sortField, bool ascending, string filterBy)
     {
-        return await _context.Employees.ToListAsync();
+        return await _context.Employees
+            .Where(x => x.FullName.ToLower().Contains(filterBy.ToLower()) || x.Subdivision.ToLower().Contains(filterBy.ToLower()) 
+            || x.Position.ToLower().Contains(filterBy.ToLower()))
+            .OrderByPropertyName(sortField, ascending)
+            .ToListAsync();
     }
 
     public async Task<Employee> GetByIdAsync(int id)
