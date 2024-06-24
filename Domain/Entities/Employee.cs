@@ -24,16 +24,15 @@ public class Employee
     [Required]
     public bool ActiveEmployee { get; set; }
 
-    [Required]
-    public int PeoplePartnerId { get; set; }
+    public int? PeoplePartnerId { get; set; }
 
     [DeleteBehavior(DeleteBehavior.Restrict)]
-    public Employee PeoplePartner { get; set; }
+    public Employee? PeoplePartner { get; set; }
 
     [Required]
     public int AbsenceBalance { get; set; }
 
     public ICollection<ApprovalRequest> ApprovalRequests { get; set; }
 
-    public ICollection<Employee> Employees { get; set; }
+    public ICollection<Employee>? Employees { get; set; }
 }

@@ -10,7 +10,7 @@ public class CreateEmployeeDto : IMap
     public string Subdivision {  get; set; }
     public string Position { get; set; }
     public bool ActiveEmployee { get; set; }
-    public int PeoplePartnerId { get; set; }
+    public int? PeoplePartnerId { get; set; }
     public int AbsenceBalance { get; set; }
 
     public void Mapping(Profile profile)
