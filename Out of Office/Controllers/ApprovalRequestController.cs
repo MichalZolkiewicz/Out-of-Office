@@ -1,7 +1,5 @@
 ﻿using Application.Dto.ApprovalRequests;
-using Application.Dto.Employees;
 using Application.Interfaces;
-using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Out_of_Office.Filters;
 using Out_of_Office.Filters.Helpers;

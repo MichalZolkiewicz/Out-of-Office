@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.ExtensionMethods;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -15,9 +16,13 @@ public class ProjectRepository : IProjectRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Project>> GetAllAsync()
+    public async Task<IEnumerable<Project>> GetAllAsync(string sortField, bool ascending, string filterBy)
     {
-        return await _context.Projects.ToListAsync();
+        return await _context.Projects
+            .Where(x => x.ProjectManagerId.ToString().ToLower().Contains(filterBy.ToLower()) || x.ProjectType.ToLower().Contains(filterBy.ToLower())
+            || x.Status.ToLower().Contains(filterBy.ToLower()))
+            .OrderByPropertyName(sortField, ascending)
+            .ToListAsync();
     }
 
     public async Task<Project> GetByIdAsync(int id)

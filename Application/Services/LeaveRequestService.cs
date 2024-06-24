@@ -18,9 +18,9 @@ public class LeaveRequestService : ILeaveRequestService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<LeaveRequestDto>> GetAllLeaveRequestsAsync()
+    public async Task<IEnumerable<LeaveRequestDto>> GetAllLeaveRequestsAsync(string sortField, bool ascending, string filterBy)
     {
-        var leaves = await _leaveRequestRepository.GetAllAsync();
+        var leaves = await _leaveRequestRepository.GetAllAsync(sortField, ascending, filterBy);
         return _mapper.Map<IEnumerable<LeaveRequestDto>>(leaves); 
     }
 

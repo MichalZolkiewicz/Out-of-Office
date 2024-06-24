@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.ExtensionMethods;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -14,9 +15,12 @@ public class LeaveRequestRepository : ILeaveRequestRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<LeaveRequest>> GetAllAsync()
+    public async Task<IEnumerable<LeaveRequest>> GetAllAsync(string sortField, bool ascending, string filterBy)
     {
-        return await _context.LeaveRequests.ToListAsync();
+        return await _context.LeaveRequests
+            .Where(x => x.EmployeeId.ToString().ToLower().Contains(filterBy.ToLower()) || x.Status.ToLower().Contains(filterBy.ToLower()))
+            .OrderByPropertyName(sortField, ascending)
+            .ToListAsync();
     }
 
     public async Task<LeaveRequest> GetByIdAsync(int id)

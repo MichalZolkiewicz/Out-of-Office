@@ -18,9 +18,9 @@ internal class ProjectService : IProjectService
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<ProjectDto>> GetAllProjectsAsync()
+    public async Task<IEnumerable<ProjectDto>> GetAllProjectsAsync(string sortField, bool ascending, string filterBy)
     {
-        var projects = await _projectRepository.GetAllAsync();
+        var projects = await _projectRepository.GetAllAsync(sortField, ascending, filterBy);
         return _mapper.Map<IEnumerable<ProjectDto>>(projects);
     }
 

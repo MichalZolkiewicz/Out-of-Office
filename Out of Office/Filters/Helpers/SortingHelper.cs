@@ -11,4 +11,14 @@ public class SortingHelper
     {
         return new[] { SortFields.ApproverId, SortFields.Status };
     }
+
+    public static KeyValuePair<string, string>[] GetLeaveRequestsSortFields()
+    {
+        return new[] { SortFields.EmployeeId, SortFields.Status };
+    }
+
+    public static KeyValuePair<string, string>[] GetProjectsSortFields()
+    {
+        return new[] { SortFields.ProjectType, SortFields.Status, SortFields.ProjectManagerId };
+    }
 }
