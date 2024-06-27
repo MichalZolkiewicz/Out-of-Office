@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(OutOfOfficeContext))]
-    partial class OutOfOfficeContextModelSnapshot : ModelSnapshot
+    [Migration("20240626175851_UserEntityWithIdentityUser")]
+    partial class UserEntityWithIdentityUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,9 +93,14 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PeoplePartnerId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Employees");
                 });
@@ -219,9 +227,6 @@ namespace Infrastructure.Migrations
                     b.Property<int?>("PeoplePartnerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PeoplePartnerId1")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -257,7 +262,7 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("PeoplePartnerId1");
+                    b.HasIndex("PeoplePartnerId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -425,6 +430,10 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("PeoplePartnerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Domain.Entities.User", null)
+                        .WithMany("Employees")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("PeoplePartner");
                 });
 
@@ -441,9 +450,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.HasOne("Domain.Entities.User", "PeoplePartner")
-                        .WithMany("Users")
-                        .HasForeignKey("PeoplePartnerId1")
+                    b.HasOne("Domain.Entities.Employee", "PeoplePartner")
+                        .WithMany()
+                        .HasForeignKey("PeoplePartnerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("PeoplePartner");
@@ -511,7 +520,7 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("ApprovalRequests");
 
-                    b.Navigation("Users");
+                    b.Navigation("Employees");
                 });
 #pragma warning restore 612, 618
         }
