@@ -9,4 +9,5 @@ public class CreateUserDto
     public string Position { get; set; }
     public string Subdivision { get; set; }
     public int AbsenceBalance { get; set; }
+    public bool ActiveEmployee { get; set; }
 }
