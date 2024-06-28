@@ -1,8 +1,13 @@
 ﻿using Application.Dto.Users;
+using Application.Interfaces;
+using Application.Services;
 using Domain.Entities;
 using Infrastructure.Identity;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Out_of_Office.Filters;
+using Out_of_Office.Filters.Helpers;
 using Out_of_Office.Wrapper;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -13,12 +18,37 @@ namespace Out_of_Office.Controllers;
 public class UserController : ControllerBase
 { 
     private readonly UserManager<User> _userManager;
+    private readonly IUserService _userService;
     private readonly RoleManager<IdentityRole> _roleManager;
 
-    public UserController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+    public UserController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IUserService userService)
     {
         _roleManager = roleManager;
         _userManager = userManager;
+        _userService = userService;
+    }
+
+    [SwaggerOperation(Summary = "Retireves sort fields")]
+    [HttpGet("[action]")]
+    public IActionResult GetSortFields()
+    {
+        return Ok(SortingHelper.GetUsersSortFields().Select(x => x.Key));
+    }
+
+    [SwaggerOperation(Summary = "Retrieves all employees")]
+    [HttpGet]
+    [Route("GetAll")]
+    public async Task<IActionResult> GetUsers([FromQuery] UserSortingFilter sortingFilter, [FromQuery] string filterBy = "")
+    {
+        var validSortingFilter = new UserSortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
+
+        var users = await _userService.GetAllUsersAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
+        if (users == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(users);
     }
 
     [HttpPost]
@@ -131,9 +161,10 @@ public class UserController : ControllerBase
                 Message = "User does not exist!"
             });
         }
-
+        
         existsingUser.ActiveEmployee = status;
         await _userManager.UpdateAsync(existsingUser);
+        
 
         return Ok(new Response { Succeeded = true, Message = "User status changed" });
     }
