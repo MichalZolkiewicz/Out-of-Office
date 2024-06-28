@@ -11,7 +11,6 @@ public static class DependencyInjection
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddScoped<IApprovalRequestService, ApprovalRequestService>();
-        services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<ILeaveRequestService, LeaveRequestService>();
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IUserService, UserService>();
