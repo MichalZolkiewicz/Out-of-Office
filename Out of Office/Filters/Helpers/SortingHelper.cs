@@ -2,7 +2,7 @@
 
 public class SortingHelper
 {
-    public static KeyValuePair<string, string>[] GetEmployeeSortFields()
+    public static KeyValuePair<string, string>[] GetUsersSortFields()
     {
         return new[] { SortFields.FullName, SortFields.Subdivision, SortFields.Position };
     }

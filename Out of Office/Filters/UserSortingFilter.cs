@@ -2,19 +2,19 @@
 
 namespace Out_of_Office.Filters;
 
-public class EmployeeSortingFilter
+public class UserSortingFilter
 {
     public string SortField { get; set; }
     public bool Ascending { get; set; } = true;
 
-    public EmployeeSortingFilter()
+    public UserSortingFilter()
     {
         SortField = "Id";
     }
 
-    public EmployeeSortingFilter(string sortField, bool ascending)
+    public UserSortingFilter(string sortField, bool ascending)
     {
-        var sortFields = SortingHelper.GetEmployeeSortFields();
+        var sortFields = SortingHelper.GetUsersSortFields();
 
         sortField = sortField.ToLower();
 
