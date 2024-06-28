@@ -21,7 +21,7 @@ public class Project
     public int ProjectManagerId { get; set; }
 
     [Required]
-    public Employee ProjectManager { get; set; }
+    public User ProjectManager { get; set; }
 
     public string Comment { get; set; }
 

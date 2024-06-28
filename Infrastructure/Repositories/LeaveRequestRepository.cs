@@ -18,7 +18,7 @@ public class LeaveRequestRepository : ILeaveRequestRepository
     public async Task<IEnumerable<LeaveRequest>> GetAllAsync(string sortField, bool ascending, string filterBy)
     {
         return await _context.LeaveRequests
-            .Where(x => x.EmployeeId.ToString().ToLower().Contains(filterBy.ToLower()) || x.Status.ToLower().Contains(filterBy.ToLower()))
+            .Where(x => x.UserId.ToString().ToLower().Contains(filterBy.ToLower()) || x.Status.ToLower().Contains(filterBy.ToLower()))
             .OrderByPropertyName(sortField, ascending)
             .ToListAsync();
     }

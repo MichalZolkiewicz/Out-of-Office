@@ -22,14 +22,14 @@ public class EmployeeController : ControllerBase
     [HttpGet("[action]")]
     public IActionResult GetSortFields()
     {
-        return Ok(SortingHelper.GetEmployeeSortFields().Select(x => x.Key));
+        return Ok(SortingHelper.GetUsersSortFields().Select(x => x.Key));
     }
 
     [SwaggerOperation(Summary = "Retrieves lists of all employees")]
     [HttpGet]
-    public async Task<IActionResult> GetAllEmployeesAsync([FromQuery] EmployeeSortingFilter sortingFilter, [FromQuery] string filterBy = "")
+    public async Task<IActionResult> GetAllEmployeesAsync([FromQuery] UserSortingFilter sortingFilter, [FromQuery] string filterBy = "")
     {
-        var validSortingFilter = new EmployeeSortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
+        var validSortingFilter = new UserSortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
 
         var employees = await _employeeService.GetAllEmployeesAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
         if(employees == null)

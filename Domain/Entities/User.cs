@@ -29,6 +29,7 @@ public class User : IdentityUser
     public int AbsenceBalance { get; set; }
 
     public ICollection<ApprovalRequest> ApprovalRequests { get; set; }
+    public ICollection<LeaveRequest> LeaveRequests { get; set; }
 
     public ICollection<User>? Users { get; set; }
 }

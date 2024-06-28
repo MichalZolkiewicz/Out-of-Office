@@ -11,7 +11,7 @@ public class ApprovalRequest
 
     [Required]
     public int ApproverId { get; set; }
-    public Employee Approver { get; set; }
+    public User Approver { get; set; }
 
     [Required]
     public int LeaveRequestId { get; set; }

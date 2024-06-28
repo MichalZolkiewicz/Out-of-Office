@@ -30,9 +30,7 @@ public class Employee
     public Employee? PeoplePartner { get; set; }
 
     [Required]
-    public int AbsenceBalance { get; set; }
-
-    public ICollection<ApprovalRequest> ApprovalRequests { get; set; }
+    public int AbsenceBalance { get; set; }  
 
     public ICollection<Employee>? Employees { get; set; }
 }
