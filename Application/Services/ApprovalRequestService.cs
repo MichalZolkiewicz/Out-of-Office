@@ -29,9 +29,10 @@ public class ApprovalRequestService : IApprovalRequestService
         var approval = await _approvalRepository.GetByIdAsync(id);
         return _mapper.Map<ApprovalRequestDto>(approval);
     }
-    public async Task<ApprovalRequestDto> AddApprovalRequestAsync(CreateApprovalRequestDto newApprovalRequest)
+    public async Task<ApprovalRequestDto> AddApprovalRequestAsync(CreateApprovalRequestDto newApprovalRequest, string userId)
     {
         var approval = _mapper.Map<ApprovalRequest>(newApprovalRequest);
+        approval.ApproverId = userId;
         var result = await _approvalRepository.AddAsync(approval);
         return _mapper.Map<ApprovalRequestDto>(result);
     }
