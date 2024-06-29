@@ -9,4 +9,6 @@ public interface ILeaveRequestService
     Task<LeaveRequestDto> AddLeaveRequestAsync(CreateLeaveRequestDto newLeaveRequest);
     Task UpdateLeaveRequestAsync(UpdateLeaveRequestDto updatedLeaveRequest);
     Task DeleteLeaveRequestAsync(int id);
+
+    Task ChangeStatusOfLeaveRequestAsync(ChangeStatusLeaveRequestDto changeStatusLeaveRequest);
 }

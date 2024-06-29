@@ -9,4 +9,6 @@ public interface ILeaveRequestRepository
     Task<LeaveRequest> AddAsync(LeaveRequest leaveRequest);
     Task UpdateAsync(LeaveRequest leaveRequest);
     Task DeleteAsync(LeaveRequest leaveRequest);
+
+    Task ChangeStatusAsync(LeaveRequest leaveRequest);
 }

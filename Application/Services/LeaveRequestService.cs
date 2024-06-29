@@ -49,4 +49,11 @@ public class LeaveRequestService : ILeaveRequestService
         var leave = await _leaveRequestRepository.GetByIdAsync(id);
         await _leaveRequestRepository.DeleteAsync(leave);
     }
+
+    public async Task ChangeStatusOfLeaveRequestAsync(ChangeStatusLeaveRequestDto changeStatusLeaveRequest)
+    {
+        var existingLeave = await _leaveRequestRepository.GetByIdAsync(changeStatusLeaveRequest.Id);
+        var leave = _mapper.Map(changeStatusLeaveRequest, existingLeave);
+        await _leaveRequestRepository.UpdateAsync(leave);
+    }
 }
