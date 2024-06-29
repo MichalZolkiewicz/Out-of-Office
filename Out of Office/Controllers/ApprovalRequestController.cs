@@ -1,9 +1,14 @@
 ﻿using Application.Dto.ApprovalRequests;
 using Application.Interfaces;
+using Domain.Entities;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Out_of_Office.Filters;
 using Out_of_Office.Filters.Helpers;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
 
 namespace Out_of_Office.Controllers;
 
@@ -12,10 +17,16 @@ namespace Out_of_Office.Controllers;
 public class ApprovalRequestController : ControllerBase
 {
     private readonly IApprovalRequestService _approvalRequestService;
+    private readonly IUserService _userService;
+    private readonly ILeaveRequestService _leaveRequestService;
+    private readonly UserManager<User> _userManager;
 
-    public ApprovalRequestController(IApprovalRequestService approvalRequestService)
+    public ApprovalRequestController(IApprovalRequestService approvalRequestService, IUserService userService, ILeaveRequestService leaveRequestService, UserManager<User> usermanager)
     {
         _approvalRequestService = approvalRequestService;
+        _userService = userService;
+        _leaveRequestService = leaveRequestService;
+        _userManager = usermanager;
     }
 
     [SwaggerOperation(Summary = "Retireves sort fields")]
@@ -54,10 +65,11 @@ public class ApprovalRequestController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Add approval request to database")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpPost]
     public async Task<IActionResult> AddApprovalRequestAsync([FromBody] CreateApprovalRequestDto createApprovalRequest)
     {
-        var approvalRequest = await _approvalRequestService.AddApprovalRequestAsync(createApprovalRequest);
+        var approvalRequest = await _approvalRequestService.AddApprovalRequestAsync(createApprovalRequest, User.FindFirstValue(ClaimTypes.NameIdentifier));
         return Created($"api/approvalRequest/{approvalRequest.Id}", createApprovalRequest);
     }
 
