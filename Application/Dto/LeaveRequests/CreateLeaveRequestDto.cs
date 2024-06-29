@@ -6,7 +6,7 @@ namespace Application.Dto.LeaveRequests;
 
 public class CreateLeaveRequestDto : IMap
 {
-    public int EmployeeId { get; set; }
+    public string UserId { get; set; }
     public string AbsenceReason { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }

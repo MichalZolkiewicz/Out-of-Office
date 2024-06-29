@@ -16,7 +16,6 @@ public class UpdateLeaveRequestDto : IMap
 
     public string Comment { get; set; }
 
-    public string Status { get; set; }
     public void Mapping(Profile profile)
     {
         profile.CreateMap<UpdateLeaveRequestDto, LeaveRequest>();
