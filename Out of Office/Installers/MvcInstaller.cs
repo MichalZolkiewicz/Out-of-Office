@@ -10,5 +10,6 @@ public class MvcInstaller : IInstaller
     {
         services.AddInfrastructure();
         services.AddApplication();
+        services.AddAuthorization();
     }
 }
