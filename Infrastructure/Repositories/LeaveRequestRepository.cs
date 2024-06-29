@@ -48,4 +48,11 @@ public class LeaveRequestRepository : ILeaveRequestRepository
         await _context.SaveChangesAsync();
         await Task.CompletedTask;
     }
+
+    public async Task ChangeStatusAsync(LeaveRequest leaveRequest)
+    {
+        _context.LeaveRequests.Update(leaveRequest);
+        await _context.SaveChangesAsync();
+        await Task.CompletedTask;
+    }
 }
