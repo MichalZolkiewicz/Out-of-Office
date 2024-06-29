@@ -18,7 +18,7 @@ public class Project
 
     public DateTime EndDate { get; set; }
 
-    public int ProjectManagerId { get; set; }
+    public string ProjectManagerId { get; set; }
 
     [Required]
     public User ProjectManager { get; set; }

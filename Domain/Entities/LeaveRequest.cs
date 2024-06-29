@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
@@ -10,7 +11,9 @@ public class LeaveRequest
     public int Id { get; set; }
 
     [Required]
-    public int UserId { get; set; }
+    public string UserId { get; set; }
+
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     public User User { get; set; }
 
     [Required]

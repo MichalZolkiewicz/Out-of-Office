@@ -10,7 +10,7 @@ public class ApprovalRequest
     public int Id { get; set; }
 
     [Required]
-    public int ApproverId { get; set; }
+    public string ApproverId { get; set; }
     public User Approver { get; set; }
 
     [Required]
