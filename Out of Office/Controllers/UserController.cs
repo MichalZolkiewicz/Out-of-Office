@@ -2,12 +2,18 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Out_of_Office.Filters;
 using Out_of_Office.Filters.Helpers;
+using Out_of_Office.Models;
 using Out_of_Office.Wrapper;
 using Swashbuckle.AspNetCore.Annotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Out_of_Office.Controllers;
 
@@ -18,12 +24,14 @@ public class UserController : ControllerBase
     private readonly UserManager<User> _userManager;
     private readonly IUserService _userService;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IConfiguration _configuration;
 
-    public UserController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IUserService userService)
+    public UserController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IUserService userService, IConfiguration configuration)
     {
         _roleManager = roleManager;
         _userManager = userManager;
         _userService = userService;
+        _configuration = configuration;
     }
 
     [SwaggerOperation(Summary = "Retireves sort fields")]
@@ -34,6 +42,7 @@ public class UserController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Retrieves all employees")]
+    [Authorize(Roles = UserRoles.Manager)]
     [HttpGet]
     [Route("GetAll")]
     public async Task<IActionResult> GetUsers([FromQuery] UserSortingFilter sortingFilter, [FromQuery] string filterBy = "")
@@ -49,6 +58,8 @@ public class UserController : ControllerBase
         return Ok(users);
     }
 
+    [SwaggerOperation(Summary = "Register new employee")]
+    [Authorize(Roles = UserRoles.Manager)]
     [HttpPost]
     [Route("Register")]
     public async Task<IActionResult> RegisterAsync(CreateUserDto createUser)
@@ -94,6 +105,7 @@ public class UserController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Change user role to manager")]
+    [Authorize(Roles = UserRoles.Manager)]
     [HttpPut]
     [Route("ManagerPromotion/{userName}")]
     public async Task<IActionResult> UpdateUserToManagerAsync(string userName)
@@ -120,6 +132,7 @@ public class UserController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Change user role to project manager")]
+    [Authorize(Roles = UserRoles.Manager)]
     [HttpPut]
     [Route("ProjectManagerPromotion/{userName}")]
     public async Task<IActionResult> UpdateUserToProjectManagerAsync(string userName)
@@ -165,5 +178,41 @@ public class UserController : ControllerBase
         
 
         return Ok(new Response { Succeeded = true, Message = "User status changed" });
+    }
+
+    [HttpPost]
+    [Route("Login")]
+    public async Task<IActionResult> LoginAsync(LoginModel login)
+    {
+        var user = await _userManager.FindByNameAsync(login.UserName);
+        if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
+        {
+            var authClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+            var token = new JwtSecurityToken(
+                expires: DateTime.Now.AddHours(2),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+            return Ok(new AuthSuccessResponse()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiration = token.ValidTo
+            });
+        }
+        return Unauthorized();
     }
 }
