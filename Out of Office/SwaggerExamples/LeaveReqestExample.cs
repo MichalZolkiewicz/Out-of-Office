@@ -14,7 +14,7 @@ public class LeaveReqestExample : IExamplesProvider<CreateLeaveRequestDto>
             StartDate = DateTime.Now,
             EndDate = DateTime.Now,
             Comment = "yourComment",
-            Status = "Awaiting Approval"
+            Status = "Submitted"
         };
     }
 }
