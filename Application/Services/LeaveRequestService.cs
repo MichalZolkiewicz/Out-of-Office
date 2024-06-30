@@ -11,11 +11,13 @@ public class LeaveRequestService : ILeaveRequestService
 
     private readonly ILeaveRequestRepository _leaveRequestRepository;
     private readonly IMapper _mapper;
+    private readonly IUserService _userService;
 
-    public LeaveRequestService(ILeaveRequestRepository leaveRequestRepository, IMapper mapper)
+    public LeaveRequestService(ILeaveRequestRepository leaveRequestRepository, IMapper mapper, IUserService userService)
     {
         _leaveRequestRepository = leaveRequestRepository;
         _mapper = mapper;
+        _userService = userService;
     }
 
     public async Task<IEnumerable<LeaveRequestDto>> GetAllLeaveRequestsAsync(string sortField, bool ascending, string filterBy)
@@ -53,6 +55,13 @@ public class LeaveRequestService : ILeaveRequestService
     public async Task ChangeStatusOfLeaveRequestAsync(ChangeStatusLeaveRequestDto changeStatusLeaveRequest)
     {
         var existingLeave = await _leaveRequestRepository.GetByIdAsync(changeStatusLeaveRequest.Id);
+
+        if(changeStatusLeaveRequest.Status == "Approved")
+        {
+            var userDto = await _userService.GetUserByIdAsync(existingLeave.UserId);
+            var daysOfLeave = (existingLeave.EndDate - existingLeave.StartDate).Days + 1;
+            await _userService.UpdateUserAbsenceBalanceAsync(userDto, daysOfLeave);
+        }
         var leave = _mapper.Map(changeStatusLeaveRequest, existingLeave);
         await _leaveRequestRepository.UpdateAsync(leave);
     }

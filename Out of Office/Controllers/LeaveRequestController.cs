@@ -4,6 +4,8 @@ using Out_of_Office.Filters.Helpers;
 using Out_of_Office.Filters;
 using Swashbuckle.AspNetCore.Annotations;
 using Application.Dto.LeaveRequests;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Out_of_Office.Controllers;
 
@@ -27,6 +29,7 @@ public class LeaveRequestController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Retrieves lists of all leave requests")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpGet]
     public async Task<IActionResult> GetAllLeaveRequestsAsync([FromQuery] LeaveRequestSortingFilter sortingFilter, [FromQuery] string filterBy = "")
     {
@@ -42,6 +45,7 @@ public class LeaveRequestController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Retrieves leave request by id")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetLeaveRequestByIdAsync(int id)
     {

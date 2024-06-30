@@ -9,4 +9,5 @@ public interface IUserService
     Task<UserDto> AddUserAsync(CreateUserDto newUser);
     Task UpdateUserAsync(UpdateUserDto updatedUser);
     Task DeleteUserAsync(string id);
+    Task UpdateUserAbsenceBalanceAsync(UserDto userDto, int daysOfLeave);
 }

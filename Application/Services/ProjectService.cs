@@ -30,9 +30,10 @@ internal class ProjectService : IProjectService
         return _mapper.Map<ProjectDto>(project);
     }
 
-    public async Task<ProjectDto> AddProjectAsync(CreateProjectDto newProject)
+    public async Task<ProjectDto> AddProjectAsync(CreateProjectDto newProject, string projectManagerId)
     {
         var project = _mapper.Map<Project>(newProject);
+        project.ProjectManagerId = projectManagerId;
         var result = await _projectRepository.AddAsync(project);
         return _mapper.Map<ProjectDto>(result);
     }

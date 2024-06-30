@@ -159,6 +159,7 @@ public class UserController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Change active status of user")]
+    [Authorize(Roles = UserRoles.Manager)]
     [HttpPut]
     [Route("ChangeActiveStatus/{status}")]
     public async Task<IActionResult> UpdateUserStatusAsync(string userName, bool status)

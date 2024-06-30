@@ -48,4 +48,12 @@ public class UserService : IUserService
         var user = await _userRepository.GetByIdAsync(id);
         await _userRepository.DeleteAsync(user);    
     }
+
+    public async Task UpdateUserAbsenceBalanceAsync(UserDto userDto, int daysOfLeave)
+    {
+        var existingUser = await _userRepository.GetByIdAsync(userDto.Id);
+        userDto.AbsenceBalance = userDto.AbsenceBalance - daysOfLeave;
+        var user = _mapper.Map(userDto, existingUser);
+        await _userRepository.UpdateAsync(user);
+    }
 }

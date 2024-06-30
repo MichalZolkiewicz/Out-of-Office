@@ -4,6 +4,9 @@ using Out_of_Office.Filters.Helpers;
 using Out_of_Office.Filters;
 using Swashbuckle.AspNetCore.Annotations;
 using Application.Dto.Projects;
+using Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Out_of_Office.Controllers;
 
@@ -26,6 +29,7 @@ public class ProjectController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Get list of all projects")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpGet("[action]")]
     public async Task<IActionResult> GetAllProjectsAsync([FromQuery] ProjectSortingFilter sortingFilter, [FromQuery] string filterBy = "")
     {
@@ -41,6 +45,7 @@ public class ProjectController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Retrieves project by id")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProjectByIdAsync(int id)
     {
@@ -54,14 +59,16 @@ public class ProjectController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Add project to database")]
+    [Authorize(Roles = UserRoles.ProjectManager)]
     [HttpPost]
     public async Task<IActionResult> AddProjectAsync([FromBody] CreateProjectDto createProject)
     {
-        var project = await _projectService.AddProjectAsync(createProject);
+        var project = await _projectService.AddProjectAsync(createProject, User.FindFirstValue(ClaimTypes.NameIdentifier));
         return Created($"api/project/{project.Id}", createProject);
     }
 
     [SwaggerOperation(Summary = "Update project in database")]
+    [Authorize(Roles = UserRoles.ProjectManager)]
     [HttpPut]
     public async Task<IActionResult> UpdateProjectAsync([FromBody] UpdateProjectDto updateProject)
     {
@@ -70,6 +77,7 @@ public class ProjectController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Remove project from database")]
+    [Authorize(Roles = UserRoles.ProjectManager)]
     [HttpDelete]
     public async Task<IActionResult> DeleteProjectAsync([FromQuery] int id)
     {
