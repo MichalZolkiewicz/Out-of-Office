@@ -17,5 +17,6 @@ public class UserDto : IMap
     public void Mapping(Profile profile)
     {
         profile.CreateMap<User, UserDto>();
+        profile.CreateMap<UserDto, User>();
     }
 }
