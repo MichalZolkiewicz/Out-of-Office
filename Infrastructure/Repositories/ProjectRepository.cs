@@ -19,7 +19,7 @@ public class ProjectRepository : IProjectRepository
     public async Task<IEnumerable<Project>> GetAllAsync(string sortField, bool ascending, string filterBy)
     {
         return await _context.Projects
-            .Where(x => x.ProjectManagerId.ToString().ToLower().Contains(filterBy.ToLower()) || x.ProjectType.ToLower().Contains(filterBy.ToLower())
+            .Where(x => x.ProjectManagerId.ToLower().Contains(filterBy.ToLower()) || x.ProjectType.ToLower().Contains(filterBy.ToLower())
             || x.Status.ToLower().Contains(filterBy.ToLower()))
             .OrderByPropertyName(sortField, ascending)
             .ToListAsync();

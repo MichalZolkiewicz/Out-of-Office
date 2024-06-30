@@ -47,7 +47,7 @@ public class ApprovalRequestController : ControllerBase
     {
         var validSortingFilter = new ApprovalRequestSortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
 
-        var approvalRequests = _approvalRequestService.GetAllApprovalRequestsAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
+        var approvalRequests = await _approvalRequestService.GetAllApprovalRequestsAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
         if(approvalRequests == null)
         {
             return NotFound();

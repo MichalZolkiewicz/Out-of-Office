@@ -35,7 +35,7 @@ public class ProjectController : ControllerBase
     {
         var validSortingFilter = new ProjectSortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
 
-        var projects = _projectService.GetAllProjectsAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
+        var projects = await _projectService.GetAllProjectsAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
         if (projects == null)
         {
             return NotFound();

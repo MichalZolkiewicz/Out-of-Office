@@ -19,7 +19,7 @@ public class ApprovalRepository : IApprovalRepository
     public async Task<IEnumerable<ApprovalRequest>> GetAllAsync(string sortField, bool ascending, string filterBy)
     {
         return await _context.ApprovalRequests
-            .Where(x => x.ApproverId.ToString().ToLower().Contains(filterBy.ToLower()) || x.Status.ToLower().Contains(filterBy.ToLower()))
+            .Where(x => x.ApproverId.ToLower().Contains(filterBy.ToLower()) || x.Status.ToLower().Contains(filterBy.ToLower()))
             .OrderByPropertyName(sortField, ascending)
             .ToListAsync();
     }
