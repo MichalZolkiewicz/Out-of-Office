@@ -1,4 +1,5 @@
 ﻿using Application.Dto.ApprovalRequests;
+using Application.Dto.LeaveRequests;
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Identity;
@@ -7,12 +8,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Out_of_Office.Filters;
 using Out_of_Office.Filters.Helpers;
+using Out_of_Office.Wrapper;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 
 namespace Out_of_Office.Controllers;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class ApprovalRequestController : ControllerBase
 {
@@ -30,6 +33,7 @@ public class ApprovalRequestController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Retireves sort fields")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpGet("[action]")]
     public IActionResult GetSortFields()
     {
@@ -37,6 +41,7 @@ public class ApprovalRequestController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Get list of all approval requests")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpGet("[action]")]
     public async Task<IActionResult> GetAllApprovalRequestsAsync([FromQuery] ApprovalRequestSortingFilter sortingFilter, [FromQuery] string filterBy = "")
     {
@@ -52,6 +57,7 @@ public class ApprovalRequestController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Retrieves approval request by id")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetApprovalRequestByIdAsync(int id)
     {
@@ -74,14 +80,30 @@ public class ApprovalRequestController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Update approval request in database")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpPut]
     public async Task<IActionResult> UpdateApprovalRequestAsync([FromBody] UpdateApprovalRequestDto updateApprovalRequest)
     {
+        if (updateApprovalRequest.Status == RequestStatus.Approved || updateApprovalRequest.Status == RequestStatus.Rejected)
+        {
+            var leaveRequest = new ChangeStatusLeaveRequestDto
+            {
+                Id = updateApprovalRequest.LeaveRequestId,
+                Status = updateApprovalRequest.Status
+            };
+            await _leaveRequestService.ChangeStatusOfLeaveRequestAsync(leaveRequest);
+        }
+        else
+        {
+            return BadRequest(new Response(false, "Incorrect wording. Please use Approved or Rejected"));
+        }
+
         await _approvalRequestService.UpdateApprovalRequestAsync(updateApprovalRequest);
         return NoContent();
     }
 
     [SwaggerOperation(Summary = "Remove approval request from database")]
+    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpDelete]
     public async Task<IActionResult> DeleteApprovalRequestAsync([FromQuery] int id)
     {
