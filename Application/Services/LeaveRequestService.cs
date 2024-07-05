@@ -59,7 +59,7 @@ public class LeaveRequestService : ILeaveRequestService
         if(changeStatusLeaveRequest.Status == "Approved")
         {
             var userDto = await _userService.GetUserByIdAsync(existingLeave.UserId);
-            var daysOfLeave = (existingLeave.EndDate - existingLeave.StartDate).Days + 1;
+            var daysOfLeave = (int)(existingLeave.EndDate - existingLeave.StartDate).TotalDays;
             await _userService.UpdateUserAbsenceBalanceAsync(userDto, daysOfLeave);
         }
         var leave = _mapper.Map(changeStatusLeaveRequest, existingLeave);
