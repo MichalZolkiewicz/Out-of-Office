@@ -15,10 +15,12 @@ public class LeaveRequestController : ControllerBase
 {
 
     private readonly ILeaveRequestService _leaveRequestService;
+    private readonly IApprovalRequestService _approveRequestService;
 
-    public LeaveRequestController(ILeaveRequestService leaveRequestService)
+    public LeaveRequestController(ILeaveRequestService leaveRequestService, IApprovalRequestService approveRequestService)
     {
-        _leaveRequestService = leaveRequestService; 
+        _leaveRequestService = leaveRequestService;
+        _approveRequestService = approveRequestService;
     }
 
     [SwaggerOperation(Summary = "Retireves sort fields")]
