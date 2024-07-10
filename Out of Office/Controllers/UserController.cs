@@ -49,7 +49,7 @@ public class UserController : ControllerBase
     {
         var validSortingFilter = new UserSortingFilter(sortingFilter.SortField, sortingFilter.Ascending);
 
-        var users = await _userService.GetAllUsersAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
+        var users = await _userService.GetAllUsersSortedAndFilteredAsync(validSortingFilter.SortField, validSortingFilter.Ascending, filterBy);
         if (users == null)
         {
             return NotFound();
@@ -59,11 +59,39 @@ public class UserController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Register new employee")]
-    [Authorize(Roles = UserRoles.Manager)]
     [HttpPost]
     [Route("Register")]
     public async Task<IActionResult> RegisterAsync(CreateUserDto createUser)
     {
+        var anyUserExists = await _userService.GetAllUsersAsync();
+        var firstId = Guid.NewGuid().ToString();
+        if(anyUserExists.Count() == 0)
+        {
+            var firstUser = new User
+            {
+                Id = firstId,
+                UserName = createUser.UserName,
+                Email = createUser.Email,
+                FullName = createUser.FullName,
+                Position = createUser.Position,
+                Subdivision = createUser.Subdivision,
+                AbsenceBalance = createUser.AbsenceBalance,
+                ActiveEmployee = createUser.ActiveEmployee,
+                PeoplePartnerId = firstId
+            };
+
+            var result1 = await _userManager.CreateAsync(firstUser, createUser.Password);
+
+            if (!await _roleManager.RoleExistsAsync(UserRoles.Manager))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Manager));
+            }
+
+            await _userManager.AddToRoleAsync(firstUser, UserRoles.Manager);
+            return Ok(new Response { Succeeded = true, Message = "User created successfuly!" });
+        }
+
+
         var userExists = await _roleManager.FindByNameAsync(createUser.UserName);
         if (userExists != null)
         {
@@ -81,8 +109,9 @@ public class UserController : ControllerBase
             FullName = createUser.FullName,
             Position = createUser.Position,
             Subdivision = createUser.Subdivision,
+            PeoplePartnerId = User.FindFirstValue(ClaimTypes.NameIdentifier),
             AbsenceBalance = createUser.AbsenceBalance,
-            ActiveEmployee = createUser.ActiveEmployee,
+            ActiveEmployee = createUser.ActiveEmployee
         };
 
         var result = await _userManager.CreateAsync(user, createUser.Password);
