@@ -4,7 +4,9 @@ namespace Application.Interfaces;
 
 public interface IUserService
 {
-    Task<IEnumerable<UserDto>> GetAllUsersAsync(string sortField, bool ascending, string filterBy);
+    Task<IEnumerable<UserDto>> GetAllUsersSortedAndFilteredAsync(string sortField, bool ascending, string filterBy);
+
+    Task<IEnumerable<UserDto>> GetAllUsersAsync();
     Task<UserDto> GetUserByIdAsync(string id);
     Task<UserDto> AddUserAsync(CreateUserDto newUser);
     Task UpdateUserAsync(UpdateUserDto updatedUser);

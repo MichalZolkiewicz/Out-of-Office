@@ -20,10 +20,10 @@ public class User : IdentityUser
     [Required]
     public bool ActiveEmployee { get; set; }
 
-    public int? PeoplePartnerId { get; set; }
+    [Required]
+    public string PeoplePartnerId { get; set; }
 
-    [DeleteBehavior(DeleteBehavior.Restrict)]
-    public User? PeoplePartner { get; set; }
+    public User PeoplePartner { get; set; }
 
     [Required]
     public int AbsenceBalance { get; set; }
@@ -31,5 +31,5 @@ public class User : IdentityUser
     public ICollection<ApprovalRequest> ApprovalRequests { get; set; }
     public ICollection<LeaveRequest> LeaveRequests { get; set; }
 
-    public ICollection<User>? Users { get; set; }
+    public ICollection<User> Users { get; set; }
 }
