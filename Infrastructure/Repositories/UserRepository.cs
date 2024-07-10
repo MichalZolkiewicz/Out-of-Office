@@ -17,13 +17,18 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public IEnumerable<User> GetAllAsync(string sortField, bool ascending, string filterBy)
+    public async Task<IEnumerable<User>> GetAllSortedAndFilteredAsync(string sortField, bool ascending, string filterBy)
     {
-        return _context.Users
+        return await _context.Users
             .Where(x => x.FullName.ToLower().Contains(filterBy.ToLower()) || x.Subdivision.ToLower().Contains(filterBy.ToLower())
             || x.Position.ToLower().Contains(filterBy.ToLower()))
             .OrderByPropertyName(sortField, ascending)
-            .ToList();
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<User>> GetAllAsync()
+    {
+        return await _context.Users.ToListAsync();
     }
 
     public async Task<User> GetByIdAsync(string id)
@@ -32,6 +37,7 @@ public class UserRepository : IUserRepository
     }
     public async Task<User> AddAsync(User user)
     {
+        
         var createdUser = await _context.AddAsync(user);
         await _context.SaveChangesAsync();
         return createdUser.Entity;
