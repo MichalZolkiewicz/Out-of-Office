@@ -21,5 +21,12 @@ public class OutOfOfficeContext : IdentityDbContext<User>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>()
+            .HasMany(x => x.Users)
+            .WithOne(x => x.PeoplePartner)
+            .HasForeignKey(x => x.PeoplePartnerId)
+            .HasPrincipalKey(x => x.Id)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
