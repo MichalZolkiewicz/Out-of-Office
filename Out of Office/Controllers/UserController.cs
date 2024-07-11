@@ -214,7 +214,7 @@ public class UserController : ControllerBase
     [Authorize(Roles = UserRoles.Manager)]
     [HttpPut]
     [Route("ChangeActiveStatus/{status}")]
-    public async Task<IActionResult> UpdateUserStatusAsync(string userName, bool status)
+    public async Task<IActionResult> UpdateUserStatusAsync(string userName, bool isUserActive)
     {
         var existsingUser = await _userManager.FindByNameAsync(userName);
         if(existsingUser == null)
@@ -226,7 +226,7 @@ public class UserController : ControllerBase
             });
         }
         
-        existsingUser.ActiveEmployee = status;
+        existsingUser.ActiveEmployee = isUserActive;
         await _userManager.UpdateAsync(existsingUser);
         
 
