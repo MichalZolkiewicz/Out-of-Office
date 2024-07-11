@@ -70,15 +70,6 @@ public class ApprovalRequestController : ControllerBase
         return Ok(approvalRequest);
     }
 
-    [SwaggerOperation(Summary = "Add approval request to database")]
-    [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
-    [HttpPost]
-    public async Task<IActionResult> AddApprovalRequestAsync([FromBody] CreateApprovalRequestDto createApprovalRequest)
-    {
-        var approvalRequest = await _approvalRequestService.AddApprovalRequestAsync(createApprovalRequest, User.FindFirstValue(ClaimTypes.NameIdentifier));
-        return Created($"api/approvalRequest/{approvalRequest.Id}", createApprovalRequest);
-    }
-
     [SwaggerOperation(Summary = "Update approval request in database")]
     [Authorize(Roles = UserRoles.Manager + "," + UserRoles.ProjectManager)]
     [HttpPut]
