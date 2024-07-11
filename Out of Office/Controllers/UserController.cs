@@ -59,39 +59,11 @@ public class UserController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Register new employee")]
+    [Authorize(Roles = UserRoles.Manager)]
     [HttpPost]
     [Route("Register")]
     public async Task<IActionResult> RegisterAsync(CreateUserDto createUser)
     {
-        var anyUserExists = await _userService.GetAllUsersAsync();
-        var firstId = Guid.NewGuid().ToString();
-        if(anyUserExists.Count() == 0)
-        {
-            var firstUser = new User
-            {
-                Id = firstId,
-                UserName = createUser.UserName,
-                Email = createUser.Email,
-                FullName = createUser.FullName,
-                Position = createUser.Position,
-                Subdivision = createUser.Subdivision,
-                AbsenceBalance = createUser.AbsenceBalance,
-                ActiveEmployee = createUser.ActiveEmployee,
-                PeoplePartnerId = firstId
-            };
-
-            var result1 = await _userManager.CreateAsync(firstUser, createUser.Password);
-
-            if (!await _roleManager.RoleExistsAsync(UserRoles.Manager))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Manager));
-            }
-
-            await _userManager.AddToRoleAsync(firstUser, UserRoles.Manager);
-            return Ok(new Response { Succeeded = true, Message = "User created successfuly!" });
-        }
-
-
         var userExists = await _roleManager.FindByNameAsync(createUser.UserName);
         if (userExists != null)
         {
@@ -132,6 +104,57 @@ public class UserController : ControllerBase
 
         return Ok(new Response { Succeeded = true, Message = "User created successfuly!" });
     }
+
+    [SwaggerOperation(Summary = "Register first user")]
+    [HttpPost]
+    [AllowAnonymous]
+    [Route("RegisterFirst")]
+    public async Task<IActionResult> RegisterFirstUserAsync(CreateUserDto createUser)
+    {
+        var anyUserExists = await _userService.GetAllUsersAsync();
+        var firstId = Guid.NewGuid().ToString();
+        if (anyUserExists.Count() != 0)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response
+            {
+                Succeeded = false,
+                Message = "Database is not empty! Please use Register!"
+            });
+        }
+
+        var firstUser = new User
+        {
+            Id = firstId,
+            UserName = createUser.UserName,
+            Email = createUser.Email,
+            FullName = createUser.FullName,
+            Position = createUser.Position,
+            Subdivision = createUser.Subdivision,
+            AbsenceBalance = createUser.AbsenceBalance,
+            ActiveEmployee = createUser.ActiveEmployee,
+            PeoplePartnerId = firstId
+        };
+
+        var result = await _userManager.CreateAsync(firstUser, createUser.Password);
+        if (!result.Succeeded)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new Response<bool>
+            {
+                Succeeded = false,
+                Message = "User creation failed! Please check login details and try again",
+                Errors = result.Errors.Select(x => x.Description)
+            });
+        }
+
+        if (!await _roleManager.RoleExistsAsync(UserRoles.Manager))
+        {
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.Manager));
+        }
+
+        await _userManager.AddToRoleAsync(firstUser, UserRoles.Manager);
+        return Ok(new Response { Succeeded = true, Message = "User created successfuly!" });
+    }
+
 
     [SwaggerOperation(Summary = "Change user role to manager")]
     [Authorize(Roles = UserRoles.Manager)]
