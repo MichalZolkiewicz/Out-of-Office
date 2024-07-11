@@ -6,6 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using Application.Dto.LeaveRequests;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Application.Dto.ApprovalRequests;
 
 namespace Out_of_Office.Controllers;
 
@@ -16,11 +17,13 @@ public class LeaveRequestController : ControllerBase
 
     private readonly ILeaveRequestService _leaveRequestService;
     private readonly IApprovalRequestService _approveRequestService;
+    private readonly IUserService _userService;
 
-    public LeaveRequestController(ILeaveRequestService leaveRequestService, IApprovalRequestService approveRequestService)
+    public LeaveRequestController(ILeaveRequestService leaveRequestService, IApprovalRequestService approveRequestService, IUserService userService)
     {
         _leaveRequestService = leaveRequestService;
         _approveRequestService = approveRequestService;
+        _userService = userService;
     }
 
     [SwaggerOperation(Summary = "Retireves sort fields")]
@@ -65,6 +68,18 @@ public class LeaveRequestController : ControllerBase
     public async Task<IActionResult> AddLeaveRequestAsync([FromBody] CreateLeaveRequestDto createLeaveRequest)
     {
         var leaveRequest = await _leaveRequestService.AddLeaveRequestAsync(createLeaveRequest);
+        var user = await _userService.GetUserByIdAsync(leaveRequest.UserId);
+
+        var approvalRequest = new CreateApprovalRequestDto()
+        {
+            LeaveRequestId = leaveRequest.Id,
+            ApproverId = user.PeoplePartnerId,
+            Comment = "Awaiting approval",
+            Status = "Awaiting approval"
+        };
+
+        await _approveRequestService.AddApprovalRequestAsync(approvalRequest);
+
         return Created($"api/leaveRequest/{leaveRequest.Id}", createLeaveRequest);
     }
 
