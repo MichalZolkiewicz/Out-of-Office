@@ -38,6 +38,17 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        builder =>
+        {
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
 
 
 var app = builder.Build();
